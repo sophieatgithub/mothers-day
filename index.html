@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser-arcade-physics.min.js"></script>
+</head>
+<body>
+<script>
+var config = {
+    type: Phaser.AUTO,
+    width: 128,
+    height: 128,
+    pixelArt: true,
+    zoom: 4,
+    scene: {
+        preload: preload,
+        create: create,
+        update: update
+    }
+};
+
+var game = new Phaser.Game(config);
+
+function preload ()
+{
+    this.load.image('backdrop', 'assets/background/backdrop.png');
+    this.load.image('tail1', 'assets/sprites/toby/prone-tailwag/tail1.png');
+    /*this.load.spritesheet('dude', 
+        'assets/dude.png',
+        { frameWidth: 32, frameHeight: 48 }
+    );*/
+}
+
+function create ()
+{
+    this.add.image(0, 0, 'backdrop').setOrigin(0, 0.75);
+    this.add.image(64, 70, 'tail1');
+}
+
+function update ()
+{
+}
+</script>
+</body>
+</html>
