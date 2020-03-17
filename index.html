@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script src="https://cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser-arcade-physics.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser-arcade-physics.js"></script>
 </head>
 <body>
 <script>
@@ -11,6 +11,13 @@ var config = {
     height: 128,
     pixelArt: true,
     zoom: 4,
+    physics: {
+        default: 'arcade',
+        arcade: {
+            gravity: { y: 300 },
+            debug: false
+        }
+    },
     scene: {
         preload: preload,
         create: create,
@@ -22,18 +29,38 @@ var game = new Phaser.Game(config);
 
 function preload ()
 {
+    
     this.load.image('backdrop', 'assets/background/backdrop.png');
-    this.load.image('tail1', 'assets/sprites/toby/prone-tailwag/tail1.png');
-    /*this.load.spritesheet('dude', 
-        'assets/dude.png',
-        { frameWidth: 32, frameHeight: 48 }
-    );*/
+    this.load.image('ground', 'assets/background/groundlv1.png');
+    this.load.image('table', 'assets/background/table.png');
+
+    // this.load.image('tail1', 'assets/sprites/toby/prone-tailwag/tail1.png');
+    // this.load.image('tail2', 'assets/sprites/toby/prone-tailwag/tail2.png');
+    // this.load.image('tail3', 'assets/sprites/toby/prone-tailwag/tail3.png');
+    this.load.spritesheet('tobylaying', 
+        'assets/spritesheets/tobylaying.png',
+        { frameWidth: 32, frameHeight: 32 }
+    );
 }
 
 function create ()
 {
     this.add.image(0, 0, 'backdrop').setOrigin(0, 0.75);
-    this.add.image(64, 70, 'tail1');
+
+    platforms = this.physics.add.staticGroup();
+
+    platforms.create(0, 0, 'ground').setOrigin(0, -8.85).refreshBody();
+
+    platforms.create(65, 92, 'table');
+
+    this.anims.create({
+        key: 'wag',
+        frames: this.anims.generateFrameNumbers('tobylaying', { start: 0, end: 2}),
+        frameRate: 1,
+        repeat: -1
+    });
+
+    this.add.sprite(64, 58, 'tail1').play('wag');
 }
 
 function update ()
