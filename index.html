@@ -87,8 +87,8 @@ function create ()
     this.anims.create({
         key: 'flutter',
         frames: this.anims.generateFrameNumbers('butterfly', { start: 0, end: 4}),
-        frameRate: 10,
-        repeat: 11
+        frameRate: 15,
+        repeat: 16
     });
 
 //creating butterfly paths
@@ -116,17 +116,17 @@ function create ()
 
     var points = [];
 
-    points.push(new Phaser.Math.Vector2(120, 20));
-    points.push(new Phaser.Math.Vector2(100, 10));
-    points.push(new Phaser.Math.Vector2(90, 70));
+    points.push(new Phaser.Math.Vector2(150, 35));
+    points.push(new Phaser.Math.Vector2(115, 25));
+    points.push(new Phaser.Math.Vector2(105, 62));
+
 
     var curve = new Phaser.Curves.Spline(points);
 
-    var flight = this.add.follower(curve, 110, 20, 'butterfly');
+    var flight = this.add.follower(curve, 135, 40, 'butterfly').play('flutter');
 
     //  Providing just a number sets the duration for following the path
-
-    flight.startFollow(3500);
+    flight.startFollow(5500);
 
 //Adding animations
 var gameObject = this.add.sprite(64, 58)
