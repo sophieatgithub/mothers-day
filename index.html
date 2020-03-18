@@ -74,13 +74,13 @@ function create ()
         key: 'wag',
         frames: this.anims.generateFrameNumbers('tobylaying', { start: 0, end: 2}),
         frameRate: 1,
-        repeat: -1
+        repeat: 1
     });
 
     this.anims.create({
         key: 'crouch',
         frames: this.anims.generateFrameNumbers('tobypounce', { start: 0, end: 15}),
-        frameRate: 1,
+        frameRate: 3,
         repeat: 0
     });
 
@@ -93,13 +93,12 @@ function create ()
 
 //creating butterfly paths
     var path = this.add.path(120, 20)
-
             .lineTo(90, 66)
             .ellipseTo(95, 60);
 
             var gameObject = this.add.sprite(0, 0, "butterfly")
-                .play('flutter')
-                .on('animationcomplete', destroyWaggingTobby, this);
+                .play('flutter');
+                
 
             gameObject.pathFollower = this.plugins.get('rexpathfollowerplugin').add(gameObject, {
             path: path,
@@ -117,10 +116,14 @@ function create ()
         });
 
 //Adding animations
-    this.add.sprite(64, 58).play('wag');
+var gameObject = this.add.sprite(64, 58)
+    .play('wag')
+    .on('animationcomplete', destroyWaggingTobby, this);     //checking whether animation is complete;
 
     function destroyWaggingTobby() {
-        console.log("complete");
+        this.add.sprite(64, 58).play('crouch');
+        gameObject.destroy();
+
     }
 }
 
