@@ -50,10 +50,10 @@ function preload ()
         { frameWidth: 6, frameHeight: 4 }
     );
 
-    var url;
+    // var url;
   
-    url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexpathfollowerplugin.min.js';
-    this.load.plugin('rexpathfollowerplugin', url, true);
+    // url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexpathfollowerplugin.min.js';
+    // this.load.plugin('rexpathfollowerplugin', url, true);
 
 }
 
@@ -92,28 +92,41 @@ function create ()
     });
 
 //creating butterfly paths
-    var path = this.add.path(120, 20)
-            .lineTo(90, 66)
-            .ellipseTo(95, 60);
+    // var path = this.add.path(120, 20)
+    //         .lineTo(90, 66)
+    //         .ellipseTo(95, 60);
 
-            var gameObject = this.add.sprite(0, 0, "butterfly")
-                .play('flutter');
+    //         var gameObject = this.add.sprite(0, 0, "butterfly")
+    //             .play('flutter');
                 
+    //         gameObject.pathFollower = this.plugins.get('rexpathfollowerplugin').add(gameObject, {
+    //         path: path,
+    //         t: 0,
+    //         rotateToPath: false
+    //     });
 
-            gameObject.pathFollower = this.plugins.get('rexpathfollowerplugin').add(gameObject, {
-            path: path,
-            t: 0,
-            rotateToPath: false
-        });
+    //     this.tweens.add({
+    //         targets: gameObject.pathFollower,
+    //         t: 1,
+    //         ease: 'Cubic', // 'Cubic', 'Elastic', 'Bounce', 'Back'
+    //         duration: 6500,
+    //         repeat: 0,
+    //         yoyo: false
+    //     });
 
-        this.tweens.add({
-            targets: gameObject.pathFollower,
-            t: 1,
-            ease: 'Cubic', // 'Cubic', 'Elastic', 'Bounce', 'Back'
-            duration: 6500,
-            repeat: 0,
-            yoyo: false
-        });
+    var points = [];
+
+    points.push(new Phaser.Math.Vector2(120, 20));
+    points.push(new Phaser.Math.Vector2(100, 10));
+    points.push(new Phaser.Math.Vector2(90, 70));
+
+    var curve = new Phaser.Curves.Spline(points);
+
+    var flight = this.add.follower(curve, 110, 20, 'butterfly');
+
+    //  Providing just a number sets the duration for following the path
+
+    flight.startFollow(3500);
 
 //Adding animations
 var gameObject = this.add.sprite(64, 58)
