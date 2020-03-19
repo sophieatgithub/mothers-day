@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script src="https://cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser-arcade-physics.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser-arcade-physics.js"></script>
 </head>
 <body>
 <script>
@@ -50,25 +50,21 @@ function preload ()
         { frameWidth: 6, frameHeight: 4 }
     );
 
-    // var url;
-  
-    // url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexpathfollowerplugin.min.js';
-    // this.load.plugin('rexpathfollowerplugin', url, true);
-
 }
 
 function create ()
 {
+//Adding background
     this.add.image(0, 0, 'backdrop').setOrigin(0, 0.75);
 
     platforms = this.physics.add.staticGroup();
 
+//Adding surfaces with physics
     platforms.create(0, 0, 'ground').setOrigin(0, -8.85).refreshBody();
 
     platforms.create(65, 92, 'table');
 
 //Creating animations
-
 //Toby laying on the table tail wag animation
     this.anims.create({
         key: 'wag',
@@ -85,10 +81,24 @@ function create ()
     });
 
     this.anims.create({
+        key: 'pounce',
+        frames: this.anims.generateFrameNumbers('tobypounce', { start: 16, end: 25}),
+        frameRate: 3,
+        repeat: 0
+    });
+
+    this.anims.create({
         key: 'flutter',
         frames: this.anims.generateFrameNumbers('butterfly', { start: 0, end: 4}),
         frameRate: 15,
         repeat: 16
+    });
+
+    this.anims.create({
+        key: 'newflutter',
+        frames: this.anims.generateFrameNumbers('butterfly', { start: 0, end: 4}),
+        frameRate: 20,
+        repeat: 15
     });
 
 //creating butterfly paths
@@ -114,6 +124,8 @@ function create ()
     //         yoyo: false
     //     });
 
+
+//Butterfly flight path////////////////////////////////
     var points = [];
 
     points.push(new Phaser.Math.Vector2(150, 35));
@@ -128,15 +140,44 @@ function create ()
     //  Providing just a number sets the duration for following the path
     flight.startFollow(5500);
 
-//Adding animations
+    //Flutter Away////////////////////////////////
+    var newpoints = [];
+
+    newpoints.push(new Phaser.Math.Vector2(90, 40));
+    newpoints.push(new Phaser.Math.Vector2(50, 30));
+    newpoints.push(new Phaser.Math.Vector2(10, 10));
+
+
+    var newcurve = new Phaser.Curves.Spline(newpoints);
+
+///////////////////////////////////////////////////////////////
+//Toby animation chain and Pathh
+var wagging;
+
 var gameObject = this.add.sprite(64, 58)
     .play('wag')
-    .on('animationcomplete', destroyWaggingTobby, this);     //checking whether animation is complete;
+    .on('animationcomplete', destroyWaggingTobby, this);  //checking whether animation is complete;
 
     function destroyWaggingTobby() {
-        this.add.sprite(64, 58).play('crouch');
+        wagging = this.add.sprite(64, 58)
+            .play('crouch')
+            .on('animationcomplete', destroyCrouching, this)
+            .on('animationcomplete', flutterAway, this);
         gameObject.destroy();
+    }
 
+    function destroyCrouching() {
+        var line = new Phaser.Curves.Line([64, 58, 82, 58]);
+        var path = this.add.follower(line, 64, 58, 'tobypounce')
+            .play('pounce')
+        path.startFollow(50);
+        wagging.destroy();
+    }
+
+    function flutterAway() {
+            flight.destroy();
+            var newflight = this.add.follower(newcurve, 90, 60, 'butterfly').play('newflutter');
+            newflight.startFollow(3000);
     }
 }
 
