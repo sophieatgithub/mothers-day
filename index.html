@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script src="https://cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser-arcade-physics.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser-arcade-physics.min.js"></script>
 </head>
 <body>
 <script>
@@ -50,6 +50,10 @@ function preload ()
         { frameWidth: 6, frameHeight: 4 }
     );
 
+    this.load.spritesheet('butterflyright', 
+        'assets/spritesheets/butterflyright.png',
+        { frameWidth: 6, frameHeight: 4 }
+    );
 }
 
 function create ()
@@ -101,6 +105,12 @@ function create ()
         repeat: 15
     });
 
+    this.anims.create({
+        key: 'exitflutter',
+        frames: this.anims.generateFrameNumbers('butterflyright', { start: 0, end: 4}),
+        frameRate: 18,
+        repeat: 20
+    });
 //creating butterfly paths
     // var path = this.add.path(120, 20)
     //         .lineTo(90, 66)
@@ -150,9 +160,21 @@ function create ()
 
     var newcurve = new Phaser.Curves.Spline(newpoints);
 
+    //Exit Flutter///////////////////////
+    var exitpoints = [];
+
+    exitpoints.push(new Phaser.Math.Vector2(10, 30));
+    exitpoints.push(new Phaser.Math.Vector2(50, 50));
+    exitpoints.push(new Phaser.Math.Vector2(150, 25));
+
+
+    var exitcurve = new Phaser.Curves.Spline(exitpoints);
+
 ///////////////////////////////////////////////////////////////
 //Toby animation chain and Pathh
 var wagging;
+var newflight;
+var exitflight;
 
 var gameObject = this.add.sprite(64, 58)
     .play('wag')
@@ -176,10 +198,21 @@ var gameObject = this.add.sprite(64, 58)
 
     function flutterAway() {
             flight.destroy();
-            var newflight = this.add.follower(newcurve, 90, 60, 'butterfly').play('newflutter');
+            newflight = this.add.follower(newcurve, 90, 60, 'butterfly')
+                .play('newflutter')
+                .on('animationcomplete', flutterOffscreen, this);
             newflight.startFollow(3000);
+
+            function flutterOffscreen() {
+            newflight.destroy();
+            exitflight = this.add.follower(exitcurve, 10, 30, 'butterflyright')
+                .play('exitflutter');
+            exitflight.startFollow(5000);
+        }
     }
 }
+
+    
 
 function update ()
 {
