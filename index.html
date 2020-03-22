@@ -30,7 +30,6 @@ var game = new Phaser.Game(config);
 
 function preload ()
 {
-    
     this.load.image('backdrop', 'assets/background/backdrop.png');
     this.load.image('ground', 'assets/background/groundlv1.png');
     this.load.image('table', 'assets/background/table.png');
@@ -133,6 +132,11 @@ function create ()
     //         repeat: 0,
     //         yoyo: false
     //     });
+//Cloud Animation
+    // var messagePath = new Phaser.Curves.Line(0, 60, 128, 60);
+    // var messageAnimation = this.add.follower(messagePath, 0, 10, 'message').play();
+    // messageAnimation.startFollow(5000);
+    // console.log(messageAnimation);
 
 
 //Butterfly flight path////////////////////////////////
@@ -145,7 +149,7 @@ function create ()
 
     var curve = new Phaser.Curves.Spline(points);
 
-    var flight = this.add.follower(curve, 135, 40, 'butterfly').play('flutter');
+    var flight = this.add.follower(curve, 0, 0, 'butterfly').play('flutter');
 
     //  Providing just a number sets the duration for following the path
     flight.startFollow(5500);
